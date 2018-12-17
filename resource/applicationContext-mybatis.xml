@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+    <beans xmlns="http://www.springframework.org/schema/beans"  
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  
+            xmlns:aop="http://www.springframework.org/schema/aop"  
+            xmlns:p="http://www.springframework.org/schema/p"  
+            xmlns:tx="http://www.springframework.org/schema/tx"  
+            xmlns:context="http://www.springframework.org/schema/context"  
+            xsi:schemaLocation="   
+                http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd   
+                http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd   
+                http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd 
+                http://www.springframework.org/schema/context 
+                http://www.springframework.org/schema/context/spring-context.xsd">  
+                
+    <context:component-scan base-package="cn.bdqn.service"/>
+
+    <context:annotation-config />
+
+    <!--引入属性文件-->
+   	<context:property-placeholder location="classpath:database.properties"/>
+
+    <!-- JNDI获取数据源(使用dbcp连接池) -->  
+     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" scope="singleton">
+		    <property name="driverClassName" value="${jdbc.driver}"/>
+		    <property name="url" value="${jdbc.url}"/>
+		    <property name="username" value="${jdbc.user}"/>
+		    <property name="password" value="${jdbc.password}"/>
+		    <property name="initialSize" value="${jdbc.initialSize}"/>
+			<property name="maxActive" value="${jdbc.maxActive}"/>
+			<property name="maxIdle" value="${jdbc.maxIdle}"/>
+			<property name="minIdle" value="${jdbc.minIdle}"/>
+			<property name="maxWait" value="${jdbc.maxWait}"/>
+			<property name="removeAbandoned" value="${jdbc.removeAbandoned}"/>
+			<property name="removeAbandonedTimeout" value="${jdbc.removeAbandonedTimeout}"/>
+			<property name= "testWhileIdle" value="true"/>
+			<property name= "timeBetweenEvictionRunsMillis" value="60000"/>
+			<property name= "testOnBorrow" value="false"/>
+			<property name= "testOnReturn" value="false"/>
+			<property name= "validationQuery" value="select 1"/>
+			<property name= "numTestsPerEvictionRun" value="${jdbc.maxActive}"/>
+	 	</bean>
+   
+ 	<!-- 配置mybatis SqlSessionFactoryBean -->
+ 	<bean class="org.mybatis.spring.SqlSessionFactoryBean" id="sessionFactory">
+ 		<property name="dataSource" ref="dataSource"/>
+ 		<property name="configLocation" value="classpath:mybatis-config.xml"/>
+ 	</bean>
+
+    <!--MapperScannerConfigurer配置-->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="cn.bdqn.dao"/>
+    </bean>
+
+    <!--1配置事务-->
+    <bean class="org.springframework.jdbc.datasource.DataSourceTransactionManager" id="transactionManager">
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+
+    <!--2指定事务管理器并设置事务属性-->
+    <tx:advice transaction-manager="transactionManager" id="txAdvice">
+        <!--声明事务规则-->
+        <tx:attributes>
+            <tx:method name="find*" propagation="SUPPORTS"/>
+            <tx:method name="get*" propagation="SUPPORTS"/>
+            <tx:method name="set*" propagation="SUPPORTS"/>
+            <tx:method name="add*" propagation="REQUIRED" rollback-for="java.lang.Exception"/>
+            <tx:method name="update*" propagation="REQUIRED" rollback-for="java.lang.Exception"/>
+            <tx:method name="del*" propagation="REQUIRED" rollback-for="java.lang.Exception"/>
+            <tx:method name="*" propagation="REQUIRED" rollback-for="java.lang.Exception"/>
+        </tx:attributes>
+    </tx:advice>
+
+    <!--定义切面-->
+    <aop:config>
+        <!--定义切点-->
+        <aop:pointcut id="txPointCut" expression="execution(* cn.bdqn.service..*.*(..))"/>
+        <!--增强-->
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="txPointCut"/>
+    </aop:config>
+
+</beans>
