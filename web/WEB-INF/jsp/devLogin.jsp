@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>后台登录</title>
+    <title>开发者登录</title>
 
     <!-- Bootstrap -->
     <link href="${pageContext.request.contextPath }/statics/css/bootstrap.min.css" rel="stylesheet">
@@ -30,19 +30,19 @@
     <div class="login_wrapper">
         <div class="animate form login_form">
             <section class="login_content">
-                <form method="post" action="">
-                    <h1>后台登录</h1>
+                <form id="devLoginFrm" method="post" action="/dev/dologin.html">
+                    <h1>开发者登录</h1>
+                    <div id="devLoginMsg">${msg}</div>
                     <div>
-                        <input type="text" name="userCode" class="form-control" placeholder="请输入用户名..." required />
+                        <input type="text" name="devCode" id="devCode" class="form-control" placeholder="请输入用户名..." required="required" />
                     </div>
                     <div>
-                        <input type="password" name="userPassword" class="form-control" placeholder="请输入密码..." required />
+                        <input type="password" name="devPassword" id="devPassword" class="form-control" placeholder="请输入密码..." required="required" />
                     </div>
                     <div>
-                        <a class="btn btn-default submit" href="index.html">登录</a>
-                        <a class="btn btn-default" href="javascript:void(0);" onclick="history.back(-1);">返回</a>
+                        <a id="devFrmSbmBt" class="btn btn-default submit" href="javascript:void(0);">登&nbsp;&nbsp;&nbsp;&nbsp;录</a>
+                        <a class="btn btn-default" href="javascript:void(0);" onclick="history.back(-1);">返&nbsp;&nbsp;&nbsp;&nbsp;回</a>
                     </div>
-
                     <div class="clearfix"></div>
                     <div class="separator">
                         <div class="clearfix"></div>
@@ -57,5 +57,23 @@
         </div>
     </div>
 </div>
+<script type="text/javascript" src="${pageContext.request.contextPath }/statics/js/jquery.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        $("#devFrmSbmBt").click(function () {
+            if ($("#devCode").val() == ""){
+                $("#devCode").attr('placeholder','用户名不能为空,请输入用户名...');
+                $("#devCode").focus();
+                return false;
+            } else if ($("#devPassword").val() == "") {
+                $("#devPassword").attr('placeholder','密码不能为空,请输入密码...');
+                $("#devPassword").focus();
+                return false;
+            }else {
+                $("#devLoginFrm").submit();
+            }
+        });
+    });
+</script>
 </body>
 </html>

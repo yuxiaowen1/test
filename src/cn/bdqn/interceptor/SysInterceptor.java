@@ -21,15 +21,17 @@ public class SysInterceptor extends HandlerInterceptorAdapter {
 	private Logger logger = Logger.getLogger(SysInterceptor.class);
 	
 	public boolean preHandle(HttpServletRequest request,HttpServletResponse response,Object handler) throws Exception{
-		logger.debug("SysInterceptor preHandle ==========================");
+		logger.info("SysInterceptor preHandle ==========================");
 		HttpSession session = request.getSession();
 		
 		BackendUser backendUser = (BackendUser)session.getAttribute(Constants.USER_SESSION);
 		DevUser devUser = (DevUser)session.getAttribute(Constants.DEV_USER_SESSION);
-		
+
 		if(null != devUser){ //dev SUCCESS
+            logger.info("当前用户:"+devUser.getDevName());
 			return true;
 		}else if(null != backendUser){ //backend SUCCESS
+            logger.info("当前用户:"+backendUser.getUserName());
 			return true;
 		}else{
 			response.sendRedirect(request.getContextPath()+"/403.jsp");

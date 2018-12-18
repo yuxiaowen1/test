@@ -10,6 +10,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 
+/**
+ * 开发者用户控制器
+ * @author 余晓文
+ * @version 1.0 2018-12-18
+ */
 @Controller
 @RequestMapping(value = "/dev")
 public class DevController {
@@ -17,11 +22,23 @@ public class DevController {
     @Resource
     private DevUserService devUserService;
 
+    /**
+     * 跳转开发者登录页面
+     * @return
+     */
     @RequestMapping(value = "/login")
     public String login(){
-        return "dev/devLogin";
+        return "devLogin";
     }
 
+    /**
+     * 开发者登录操作
+     * @param devCode 开发者登录名
+     * @param devPassword 开发者密码
+     * @param session
+     * @param model
+     * @return
+     */
     @RequestMapping(value = "/dologin.html")
     public String doLogin(String devCode, String devPassword, HttpSession session, Model model){
         DevUser devUser = devUserService.findDevLoginUser(devCode, devPassword);
@@ -30,7 +47,38 @@ public class DevController {
             return "dev/devMain";
         }
         model.addAttribute(Constants.SYS_MESSAGE,"用户名或者密码不正确！");
-        return "dev/devLogin";
+        return "devLogin";
+    }
+
+    /**
+     * 注销操作
+     * @param session
+     * @param model
+     * @return
+     */
+    @RequestMapping(value = "/logout.html")
+    public String doL0ogOut(HttpSession session, Model model){
+        session.removeAttribute(Constants.DEV_USER_SESSION);
+        model.addAttribute(Constants.SYS_MESSAGE,"注销成功！");
+        return "devLogin";
+    }
+
+    /**
+     * 跳转主页面
+     * @return
+     */
+    @RequestMapping(value = "/user/main.html")
+    public String toMain(){
+        return "dev/devMain";
+    }
+
+    /**
+     * 跳转APP维护
+     * @return
+     */
+    @RequestMapping(value = "/user/applist.html")
+    public String appList(){
+        return "/dev/appinfolist";
     }
 
 }

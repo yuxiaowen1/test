@@ -13,7 +13,6 @@ import javax.annotation.Resource;
  * @author 余晓文
  * @version 1.0 2018-12-17
  */
-@Scope("prototype")
 @Service
 public class DevUserServiceImpl implements DevUserService {
 

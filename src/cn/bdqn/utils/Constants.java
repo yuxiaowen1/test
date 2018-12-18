@@ -9,6 +9,8 @@ public class Constants {
 	public final static String FILEUPLOAD_ERROR_2 = " * 上传失败！";
 	public final static String FILEUPLOAD_ERROR_3 = " * 上传文件格式不正确！";
 	public final static String FILEUPLOAD_ERROR_4 = " * 上传文件过大！";
-    public final static String DEV_USER = "dev";
-    public final static String BACKEND_USER = "backend";
+    public final static String USER_TYPE = "USER_TYPE";
+    public final static String APP_STATUS = "APP_STATUS";
+    public final static String APP_FLATFORM = "APP_FLATFORM";
+    public final static String PUBLISH_STATUS = "PUBLISH_STATUS";
 }
