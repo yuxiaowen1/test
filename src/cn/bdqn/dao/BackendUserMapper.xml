@@ -5,7 +5,9 @@
 <mapper namespace="cn.bdqn.dao.BackendUserMapper">
 
     <select id="getBackendLoginUser" resultType="backendUser">
-        select * from backend_user where userCode = #{userCode} and userPassword = #{userPassword}
+        select b.*,
+         (select valueName from data_dictionary d where  b.userType=d.valueId AND d.typeCode='USER_TYPE') as userTypeName
+         from backend_user b where b.userCode = #{userCode} and b.userPassword = #{userPassword}
     </select>
 
 </mapper>

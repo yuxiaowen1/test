@@ -14,15 +14,15 @@
                 <div class="clearfix"></div>
             </div>
             <div class="x_content">
-                <form method="post" action="list">
+                <form method="post" action="/dev/user/applist.html">
                     <input type="hidden" name="pageIndex" value="1"/>
                     <ul>
                         <li>
                             <div class="form-group">
                                 <label class="control-label col-md-3 col-sm-3 col-xs-12">软件名称</label>
                                 <div class="col-md-6 col-sm-6 col-xs-12">
-                                    <input name="querySoftwareName" type="text" class="form-control col-md-7 col-xs-12"
-                                           value="${querySoftwareName }">
+                                    <input name="softwareName" type="text" class="form-control col-md-7 col-xs-12"
+                                           value="${param.softwareName }">
                                 </div>
                             </div>
                         </li>
@@ -31,13 +31,14 @@
                             <div class="form-group">
                                 <label class="control-label col-md-3 col-sm-3 col-xs-12">APP状态</label>
                                 <div class="col-md-6 col-sm-6 col-xs-12">
-                                    <select name="queryStatus" class="form-control">
+                                    <select name="status" class="form-control">
                                         <c:if test="${statusList != null }">
                                             <option value="">--请选择--</option>
                                             <c:forEach var="dataDictionary" items="${statusList}">
                                                 <option
-                                                        <c:if test="${dataDictionary.valueId == queryStatus }">selected="selected"</c:if>
-                                                        value="${dataDictionary.valueId}">${dataDictionary.valueName}</option>
+                                                    <c:if test="${dataDictionary.valueId == queryStatus }">selected="selected"</c:if>
+                                                    value="${dataDictionary.valueId}">${dataDictionary.valueName}
+                                                </option>
                                             </c:forEach>
                                         </c:if>
                                     </select>
@@ -48,7 +49,7 @@
                             <div class="form-group">
                                 <label class="control-label col-md-3 col-sm-3 col-xs-12">所属平台</label>
                                 <div class="col-md-6 col-sm-6 col-xs-12">
-                                    <select name="queryFlatformId" class="form-control">
+                                    <select name="platformId" class="form-control">
                                         <c:if test="${flatFormList != null }">
                                             <option value="">--请选择--</option>
                                             <c:forEach var="dataDictionary" items="${flatFormList}">
@@ -65,7 +66,7 @@
                             <div class="form-group">
                                 <label class="control-label col-md-3 col-sm-3 col-xs-12">一级分类</label>
                                 <div class="col-md-6 col-sm-6 col-xs-12">
-                                    <select id="queryCategoryLevel1" name="queryCategoryLevel1" class="form-control">
+                                    <select id="queryCategoryLevel1" name="categoryLevel1" class="form-control">
                                         <%--<c:if test="${categoryLevel1List != null }">
                                             <option value="">--请选择--</option>
                                             <c:forEach var="appCategory" items="${categoryLevel1List}">
@@ -83,7 +84,7 @@
                                 <label class="control-label col-md-3 col-sm-3 col-xs-12">二级分类</label>
                                 <div class="col-md-6 col-sm-6 col-xs-12">
                                     <input type="hidden" name="categorylevel2list" id="categorylevel2list"/>
-                                    <select name="queryCategoryLevel2" id="queryCategoryLevel2" class="form-control" disabled>
+                                    <select name="categoryLevel2" id="queryCategoryLevel2" class="form-control" disabled>
                                         <%--<c:if test="${categoryLevel2List != null }">--%>
                                             <%--<option value="">--请选择--</option>--%>
                                             <%--<c:forEach var="appCategory" items="${categoryLevel2List}">--%>
@@ -100,7 +101,7 @@
                             <div class="form-group">
                                 <label class="control-label col-md-3 col-sm-3 col-xs-12">三级分类</label>
                                 <div class="col-md-6 col-sm-6 col-xs-12">
-                                    <select name="queryCategoryLevel3" id="queryCategoryLevel3" class="form-control" disabled>
+                                    <select name="categoryLevel3" id="queryCategoryLevel3" class="form-control" disabled>
                                         <%--<c:if test="${categoryLevel3List != null }">--%>
                                             <%--<option value="">--请选择--</option>--%>
                                             <%--<c:forEach var="appCategory" items="${categoryLevel3List}">--%>
@@ -186,24 +187,20 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <c:forEach var="appInfo" items="${appInfoList }" varStatus="status">
+                                <c:forEach var="appInfo" items="${pages.list }" varStatus="status">
                                     <tr role="row" class="odd">
                                         <td tabindex="0" class="sorting_1">${appInfo.softwareName}</td>
                                         <td>${appInfo.APKName }</td>
                                         <td>${appInfo.softwareSize }</td>
                                         <td>${appInfo.flatformName }</td>
-                                        <td>${appInfo.categoryLevel1Name } -> ${appInfo.categoryLevel2Name }
-                                            -> ${appInfo.categoryLevel3Name }</td>
+                                        <td>${appInfo.categoryLevel1Name } -> ${appInfo.categoryLevel2Name } -> ${appInfo.categoryLevel3Name }</td>
                                         <td><span id="appInfoStatus${appInfo.id}">${appInfo.statusName }</span></td>
                                         <td>${appInfo.downloads }</td>
                                         <td>${appInfo.versionNo }</td>
                                         <td>
-
-
                                             <div class="btn-group">
                                                 <button type="button" class="btn btn-danger">点击操作</button>
-                                                <button type="button" class="btn btn-danger dropdown-toggle"
-                                                        data-toggle="dropdown" aria-expanded="false">
+                                                <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                                                     <span class="caret"></span>
                                                     <span class="sr-only">Toggle Dropdown</span>
                                                 </button>
@@ -261,33 +258,33 @@
                         <div class="col-sm-5">
                             <div class="dataTables_info" id="datatable-responsive_info"
                                  role="status" aria-live="polite">共${pages.totalCount }条记录
-                                ${pages.currentPageNo }/${pages.totalPageCount }页
+                                ${pages.pageIndex }/${pages.pageCount }页
                             </div>
                         </div>
                         <div class="col-sm-7">
                             <div class="dataTables_paginate paging_simple_numbers"
                                  id="datatable-responsive_paginate">
                                 <ul class="pagination">
-                                    <c:if test="${pages.currentPageNo > 1}">
+                                    <c:if test="${pages.pageIndex > 1}">
                                         <li class="paginate_button previous"><a
                                                 href="javascript:page_nav(document.forms[0],1);"
                                                 aria-controls="datatable-responsive" data-dt-idx="0"
                                                 tabindex="0">首页</a>
                                         </li>
                                         <li class="paginate_button "><a
-                                                href="javascript:page_nav(document.forms[0],${pages.currentPageNo-1});"
+                                                href="javascript:page_nav(document.forms[0],${pages.pageIndex-1});"
                                                 aria-controls="datatable-responsive" data-dt-idx="1"
                                                 tabindex="0">上一页</a>
                                         </li>
                                     </c:if>
-                                    <c:if test="${pages.currentPageNo < pages.totalPageCount }">
+                                    <c:if test="${pages.pageIndex < pages.pageCount }">
                                         <li class="paginate_button "><a
-                                                href="javascript:page_nav(document.forms[0],${pages.currentPageNo+1 });"
+                                                href="javascript:page_nav(document.forms[0],${pages.pageIndex+1 });"
                                                 aria-controls="datatable-responsive" data-dt-idx="1"
                                                 tabindex="0">下一页</a>
                                         </li>
                                         <li class="paginate_button next"><a
-                                                href="javascript:page_nav(document.forms[0],${pages.totalPageCount });"
+                                                href="javascript:page_nav(document.forms[0],${pages.pageCount });"
                                                 aria-controls="datatable-responsive" data-dt-idx="7"
                                                 tabindex="0">最后一页</a>
                                         </li>
