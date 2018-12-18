@@ -31,8 +31,8 @@
                             <div class="form-group">
                                 <label class="control-label col-md-3 col-sm-3 col-xs-12">APP状态</label>
                                 <div class="col-md-6 col-sm-6 col-xs-12">
-                                    <select name="status" class="form-control">
-                                        <c:if test="${statusList != null }">
+                                    <select id="selectStatus" name="status" class="form-control" status="${param.status}">
+                                        <%--<c:if test="${statusList != null }">
                                             <option value="">--请选择--</option>
                                             <c:forEach var="dataDictionary" items="${statusList}">
                                                 <option
@@ -40,7 +40,7 @@
                                                     value="${dataDictionary.valueId}">${dataDictionary.valueName}
                                                 </option>
                                             </c:forEach>
-                                        </c:if>
+                                        </c:if>--%>
                                     </select>
                                 </div>
                             </div>
@@ -49,15 +49,15 @@
                             <div class="form-group">
                                 <label class="control-label col-md-3 col-sm-3 col-xs-12">所属平台</label>
                                 <div class="col-md-6 col-sm-6 col-xs-12">
-                                    <select name="platformId" class="form-control">
-                                        <c:if test="${flatFormList != null }">
+                                    <select id="selectPlatform" name="platformId" class="form-control" platformId="${param.platformId}">
+                                        <%--<c:if test="${flatFormList != null }">
                                             <option value="">--请选择--</option>
                                             <c:forEach var="dataDictionary" items="${flatFormList}">
                                                 <option
                                                         <c:if test="${dataDictionary.valueId == queryFlatformId }">selected="selected"</c:if>
                                                         value="${dataDictionary.valueId}">${dataDictionary.valueName}</option>
                                             </c:forEach>
-                                        </c:if>
+                                        </c:if>--%>
                                     </select>
                                 </div>
                             </div>
@@ -130,7 +130,7 @@
                      class="dataTables_wrapper form-inline dt-bootstrap no-footer">
                     <div class="row">
                         <div class="col-sm-12">
-                            <a href="${pageContext.request.contextPath}/dev/flatform/app/appinfoadd"
+                            <a href="${pageContext.request.contextPath}/dev/user/addappinfo.html"
                                class="btn btn-success btn-sm">新增APP基础信息</a>
                             <table id="datatable-responsive"
                                    class="table table-striped table-bordered dt-responsive nowrap dataTable no-footer dtr-inline collapsed"
@@ -187,7 +187,8 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <c:forEach var="appInfo" items="${pages.list }" varStatus="status">
+                                <c:if test="${pages != null}">
+                                    <c:forEach var="appInfo" items="${pages.list }" varStatus="status">
                                     <tr role="row" class="odd">
                                         <td tabindex="0" class="sorting_1">${appInfo.softwareName}</td>
                                         <td>${appInfo.APKName }</td>
@@ -199,20 +200,25 @@
                                         <td>${appInfo.versionNo }</td>
                                         <td>
                                             <div class="btn-group">
-                                                <button type="button" class="btn btn-danger">点击操作</button>
+                                                <%--<button type="button" class="btn btn-danger"></button>--%>
                                                 <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                                    点击操作
                                                     <span class="caret"></span>
                                                     <span class="sr-only">Toggle Dropdown</span>
                                                 </button>
                                                 <ul class="dropdown-menu" role="menu">
                                                     <li>
+                                                        <!--当软件的app状态为审核通过(2)或者已经下架(5)的状态时才可以 有下架的操作-->
+                                                        <!--当软件的app状态为下架(4)的状态时才可以有上架的操作-->
                                                         <c:choose>
+
                                                             <c:when test="${appInfo.status == 2 || appInfo.status == 5}">
                                                                 <a class="saleSwichOpen" saleSwitch="open"
                                                                    appinfoid=${appInfo.id }  appsoftwarename=${appInfo.softwareName }
                                                                    data-toggle="tooltip" data-placement="top" title=""
                                                                    data-original-title="恭喜您，您的审核已经通过，您可以点击上架发布您的APP">上架</a>
                                                             </c:when>
+
                                                             <c:when test="${appInfo.status == 4}">
                                                                 <a class="saleSwichClose" saleSwitch="close"
                                                                    appinfoid=${appInfo.id }  appsoftwarename=${appInfo.softwareName }
@@ -250,6 +256,7 @@
                                         </td>
                                     </tr>
                                 </c:forEach>
+                                </c:if>
                                 </tbody>
                             </table>
                         </div>

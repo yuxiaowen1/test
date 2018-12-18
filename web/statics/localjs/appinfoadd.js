@@ -1,8 +1,31 @@
-$(function(){  
+$(function(){
+    function changeMsg(obj,msg,class1,class2) {
+        obj.parent().next().html(msg).attr("class",class1).parent().attr("class",class2);
+    }
+    function bindFn($obj){
+        $obj.bind("blur",function(){
+            if ($obj.val()==""){
+                changeMsg($obj,"不能为空","alert","item form-group bad");
+            } else {
+                changeMsg($obj,"","","item form-group");
+            }
+        });
+    }
+    bindFn($("#softwareName"));
+    bindFn($("#supportROM"));
+    bindFn($("#interfaceLanguage"));
+    bindFn($("#softwareSize"));
+    bindFn($("#downloads"));
+    bindFn($("#flatformId"));
+    bindFn($("#categoryLevel1"));
+    bindFn($("#categoryLevel2"));
+    bindFn($("#categoryLevel3"));
+    bindFn($("#appInfo"));
+    bindFn($("#a_logoPicPath"));
 	//动态加载所属平台列表
 	$.ajax({
 		type:"GET",//请求类型
-		url:"datadictionarylist.json",//请求的url
+		url:"/dataDictionary/list.json",//请求的url
 		data:{tcode:"APP_FLATFORM"},//请求参数
 		dataType:"json",//ajax接口（请求url）返回的数据类型
 		success:function(data){//data：返回数据（json对象）
@@ -20,8 +43,8 @@ $(function(){
 	//动态加载一级分类列表
 	$.ajax({
 		type:"GET",//请求类型
-		url:"categorylevellist.json",//请求的url
-		data:{pid:null},//请求参数
+		url:"/appCategory/list.json",//请求的url
+		data:{pid:0},//请求参数
 		dataType:"json",//ajax接口（请求url）返回的数据类型
 		success:function(data){//data：返回数据（json对象）
 			$("#categoryLevel1").html("");
@@ -41,7 +64,7 @@ $(function(){
 		if(categoryLevel1 != '' && categoryLevel1 != null){
 			$.ajax({
 				type:"GET",//请求类型
-				url:"categorylevellist.json",//请求的url
+				url:"/appCategory/list.json",//请求的url
 				data:{pid:categoryLevel1},//请求参数
 				dataType:"json",//ajax接口（请求url）返回的数据类型
 				success:function(data){//data：返回数据（json对象）
@@ -71,7 +94,7 @@ $(function(){
 		if(categoryLevel2 != '' && categoryLevel2 != null){
 			$.ajax({
 				type:"GET",//请求类型
-				url:"categorylevellist.json",//请求的url
+				url:"/appCategory/list.json",//请求的url
 				data:{pid:categoryLevel2},//请求参数
 				dataType:"json",//ajax接口（请求url）返回的数据类型
 				success:function(data){//data：返回数据（json对象）
@@ -94,31 +117,32 @@ $(function(){
 	});
 	
 	$("#back").on("click",function(){
-		window.location.href = "list";
+		history.back(-1);
 	});
 	
 	$("#APKName").bind("blur",function(){
 		//ajax后台验证--APKName是否已存在
 		$.ajax({
 			type:"GET",//请求类型
-			url:"apkexist.json",//请求的url
+			url:"/dev/user/apkexist.json",//请求的url
 			data:{APKName:$("#APKName").val()},//请求参数
 			dataType:"json",//ajax接口（请求url）返回的数据类型
 			success:function(data){//data：返回数据（json对象）
 				if(data.APKName == "empty"){//参数APKName为空，错误提示
-					alert("APKName为不能为空！");
+				    changeMsg($("#APKName"),"不能为空","alert","item form-group bad");
 				}else if(data.APKName == "exist"){//账号不可用，错误提示
-					alert("该APKName已存在，不能使用！");
+                    changeMsg($("#APKName"),"已存在的名称,不能使用!","alert","item form-group bad");
 				}else if(data.APKName == "noexist"){//账号可用，正确提示
-					alert("该APKName可以使用！");
-				}
+                    changeMsg($("#APKName"),"","","item form-group");
+				}else if (data.APKName == "error") {
+                    alert("请求出错！");
+                }
 			},
 			error:function(data){//当访问时候，404，500 等非200的错误状态码
 				alert("请求错误！");
 			}
 		});
 	});
-
 });
       
       

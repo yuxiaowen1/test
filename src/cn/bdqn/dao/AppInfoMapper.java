@@ -57,4 +57,13 @@ public interface AppInfoMapper {
                  @Param("categoryLevel2") Integer categoryLevel2,
                  @Param("categoryLevel3") Integer categoryLevel3);
 
+    /**
+     * 通过APKName查询应用信息实体
+     *
+     * @param userId  所属用户id
+     * @param APKName APKName
+     * @return 应用信息实体
+     */
+    AppInfo getByAPKName(@Param("devId") Integer userId, @Param("APKName") String APKName);
+
 }

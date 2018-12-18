@@ -67,4 +67,8 @@
         </trim>
     </select>
 
+    <select id="getByAPKName" resultType="appInfo">
+        select * from app_info where devId = #{devId} and APKName = #{APKName}
+    </select>
+
 </mapper>

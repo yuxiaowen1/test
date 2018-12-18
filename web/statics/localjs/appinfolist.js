@@ -1,4 +1,5 @@
 $(function () {
+    //异步请求一级分类
     $.ajax({
         type:"GET",//请求类型
         url:"/appCategory/list.json",//请求的url
@@ -13,8 +14,53 @@ $(function () {
             $("#queryCategoryLevel1").html(options);
         }
     });
-});
+    //动态加载app所属状态列表
+    $.ajax({
+        type:"GET",//请求类型
+        url:"/dataDictionary/list.json",//请求的url
+        data:{tcode:"APP_STATUS"},//请求参数
+        dataType:"json",//ajax接口（请求url）返回的数据类型
+        success:function(data){//data：返回数据（json对象）
+            $("#selectStatus").html("");
+            var options = "<option value=\"\">--请选择--</option>";
+            for(var i = 0; i < data.length; i++){
+                if ($("#selectStatus").attr("status") == data[i].valueId){
+                    options += "<option selected value=\""+data[i].valueId+"\">"+data[i].valueName+"</option>";
+                } else {
+                    options += "<option value=\""+data[i].valueId+"\">"+data[i].valueName+"</option>";
+                }
+            }
+            $("#selectStatus").html(options);
+        },
+        error:function(data){//当访问时候，404，500 等非200的错误状态码
+            alert("加载app所属状态列表失败！");
+        }
+    });
 
+    //动态加载所属平台列表
+    $.ajax({
+        type:"GET",//请求类型
+        url:"/dataDictionary/list.json",//请求的url
+        data:{tcode:"APP_FLATFORM"},//请求参数
+        dataType:"json",//ajax接口（请求url）返回的数据类型
+        success:function(data){//data：返回数据（json对象）
+            $("#selectPlatform").html("");
+            var options = "<option value=\"\">--请选择--</option>";
+            for(var i = 0; i < data.length; i++){
+                if ($("#selectPlatform").attr("platformId") == data[i].valueId) {
+                    options += "<option selected value=\""+data[i].valueId+"\">"+data[i].valueName+"</option>";
+                }else {
+                    options += "<option value=\""+data[i].valueId+"\">"+data[i].valueName+"</option>";
+                }
+            }
+            $("#selectPlatform").html(options);
+        },
+        error:function(data){//当访问时候，404，500 等非200的错误状态码
+            alert("加载平台列表失败！");
+        }
+    });
+});
+//当一级分类改变时动态加载二级分类
 $("#queryCategoryLevel1").change(function(){
 	var queryCategoryLevel1 = $("#queryCategoryLevel1").val();
 	if(queryCategoryLevel1 != '' && queryCategoryLevel1 != null){
@@ -47,7 +93,7 @@ $("#queryCategoryLevel1").change(function(){
 	$("#queryCategoryLevel3").html(options);
     $("#queryCategoryLevel3").attr("disabled","disabled");
 });
-
+//当二级分类改变时动态加载三级分类
 $("#queryCategoryLevel2").change(function(){
 	var queryCategoryLevel2 = $("#queryCategoryLevel2").val();
 	if(queryCategoryLevel2 != '' && queryCategoryLevel2 != null){

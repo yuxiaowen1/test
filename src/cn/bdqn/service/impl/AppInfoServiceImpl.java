@@ -23,8 +23,13 @@ public class AppInfoServiceImpl implements AppInfoService {
     private AppInfoMapper appInfoMapper;
 
     @Override
+    public AppInfo findByAPKName(Integer userId, String APKName) {
+        return appInfoMapper.getByAPKName(userId,APKName);
+    }
+
+    @Override
     public PageBean<AppInfo> findAppInfoByPage(Integer userId, String softwareName, Integer status, Integer platformId, Integer categoryLevel1, Integer categoryLevel2, Integer categoryLevel3, Integer pageIndex, Integer pageSize) {
-        PageBean<AppInfo> pageBean = new PageBean<AppInfo>();
+        PageBean<AppInfo> pageBean = new PageBean<AppInfo>();;
         int count = appInfoMapper.getCount(userId, softwareName, status, platformId, categoryLevel1, categoryLevel2, categoryLevel3);
         pageBean.setTotalCount(count);
         pageBean.setPageSize(pageSize);
@@ -32,7 +37,6 @@ public class AppInfoServiceImpl implements AppInfoService {
         if (count > 0) {
             List<AppInfo> appInfoList = appInfoMapper.getAppInfoByPage(userId, softwareName, status, platformId, categoryLevel1, categoryLevel2, categoryLevel3, pageBean.getStartRow(), pageSize);
             pageBean.setList(appInfoList);
-            System.out.println(pageBean);
         }
         return pageBean;
     }

@@ -5,14 +5,18 @@ import cn.bdqn.pojo.DevUser;
 import cn.bdqn.service.AppInfoService;
 import cn.bdqn.service.DevUserService;
 import cn.bdqn.utils.Constants;
+import cn.bdqn.utils.JsonUtils;
 import cn.bdqn.utils.PageBean;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 开发者用户控制器
@@ -97,6 +101,32 @@ public class DevController {
         PageBean<AppInfo> beans = appInfoService.findAppInfoByPage(devUser.getId(), softwareName, status, platformId, categoryLevel1, categoryLevel2, categoryLevel3, pageIndex, pageSize);
         model.addAttribute("pages",beans);
         return "dev/appinfolist";
+    }
+
+    @RequestMapping("/user/addappinfo.html")
+    public String toAddAppInfo(){
+        return "dev/appinfoadd";
+    }
+
+    @RequestMapping("/user/apkexist.json")
+    @ResponseBody
+    public String getAppInfoByAPKName(HttpSession session,
+                                      @RequestParam("APKName") String APKName){
+        DevUser devUser = (DevUser) session.getAttribute(Constants.DEV_USER_SESSION);
+        AppInfo appInfo = appInfoService.findByAPKName(devUser.getId(), APKName);
+        Map<String,Object> map = new HashMap<String, Object>();
+        if (APKName == null || "".equals(APKName)){
+            map.put("APKName","empty");
+            return JsonUtils.toJson(map);
+        } else if (appInfo!=null){
+            map.put("APKName","exist");
+            return JsonUtils.toJson(map);
+        }else if (appInfo == null){
+            map.put("APKName","noexist");
+            return JsonUtils.toJson(map);
+        }
+        map.put("APKName","error");
+        return JsonUtils.toJson(map);
     }
 
 }

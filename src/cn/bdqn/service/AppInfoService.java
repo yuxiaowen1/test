@@ -34,4 +34,13 @@ public interface AppInfoService {
                                         Integer categoryLevel3,
                                         Integer pageIndex,
                                         Integer pageSize);
+
+    /**
+     * 通过APKName查询应用信息实体
+     *
+     * @param userId  所属用户id
+     * @param APKName APKName
+     * @return 应用信息实体
+     */
+    AppInfo findByAPKName(Integer userId,String APKName);
 }

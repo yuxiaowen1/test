@@ -52,7 +52,7 @@ public class PageBean<T> implements Serializable {
         if (pageSize<0){
             this.pageSize = 5;
         }else if (pageSize>totalCount){
-            this.pageSize = this.totalCount;
+            this.pageSize = this.totalCount+1;
         }else {
             this.pageSize = pageSize;
         }
