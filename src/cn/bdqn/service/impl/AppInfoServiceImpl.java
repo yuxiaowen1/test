@@ -28,6 +28,11 @@ public class AppInfoServiceImpl implements AppInfoService {
     }
 
     @Override
+    public int addAppInfo(AppInfo appInfo) {
+        return appInfoMapper.addAppInfo(appInfo);
+    }
+
+    @Override
     public PageBean<AppInfo> findAppInfoByPage(Integer userId, String softwareName, Integer status, Integer platformId, Integer categoryLevel1, Integer categoryLevel2, Integer categoryLevel3, Integer pageIndex, Integer pageSize) {
         PageBean<AppInfo> pageBean = new PageBean<AppInfo>();;
         int count = appInfoMapper.getCount(userId, softwareName, status, platformId, categoryLevel1, categoryLevel2, categoryLevel3);

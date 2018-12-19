@@ -43,4 +43,12 @@ public interface AppInfoService {
      * @return 应用信息实体
      */
     AppInfo findByAPKName(Integer userId,String APKName);
+
+    /**
+     * 添加应用信息实体
+     *
+     * @param appInfo 应用信息
+     * @return 影响数据行数
+     */
+    int addAppInfo(AppInfo appInfo);
 }

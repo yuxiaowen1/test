@@ -7,7 +7,8 @@
     <select id="getAppInfoByPage" resultType="appInfo">
         select a.*,
         (select valueName from data_dictionary d where a.status=d.valueId AND d.typeCode='APP_STATUS') as statusName,
-        (select valueName from data_dictionary d where a.flatformId=d.valueId AND d.typeCode='APP_FLATFORM') as flatformName,
+        (select valueName from data_dictionary d where a.flatformId=d.valueId AND d.typeCode='APP_FLATFORM') as
+        flatformName,
         (select categoryName from app_category ac where ac.id = a.categoryLevel3) as categoryLevel3Name,
         (select devName from dev_user d where d.id = a.devId) as devName,
         (select categoryName from app_category ac where ac.id = a.categoryLevel1) as categoryLevel1Name,
@@ -70,5 +71,14 @@
     <select id="getByAPKName" resultType="appInfo">
         select * from app_info where devId = #{devId} and APKName = #{APKName}
     </select>
+
+    <insert id="addAppInfo" parameterType="appInfo">
+        insert into app_info (softwareName,APKName,supportROM,interfaceLanguage,updateDate,softwareSize,devId,
+          appInfo,status,onSaleDate,offSaleDate,categoryLevel1,categoryLevel2,categoryLevel3,
+          downloads,flatformId,logoPicPath,logoLocPath,createdBy,creationDate)
+        values(#{softwareName},#{APKName},#{supportROM},#{interfaceLanguage},#{updateDate},#{softwareSize},#{devId},
+          #{appInfo},#{status},#{onSaleDate},#{offSaleDate},#{categoryLevel1},#{categoryLevel2},#{categoryLevel3},
+          #{downloads},#{flatformId},#{logoPicPath},#{logoLocPath},#{createdBy},#{creationDate})
+    </insert>
 
 </mapper>

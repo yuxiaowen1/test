@@ -47,7 +47,7 @@ public interface AppInfoMapper {
      * @param categoryLevel1 一类id
      * @param categoryLevel2 二类id
      * @param categoryLevel3 三类id
-     * @return
+     * @return 影响数据库行数
      */
     int getCount(@Param("devId") Integer userId,
                  @Param("softwareName") String softwareName,
@@ -61,9 +61,17 @@ public interface AppInfoMapper {
      * 通过APKName查询应用信息实体
      *
      * @param userId  所属用户id
-     * @param APKName APKName
+     * @param APKName APK名字
      * @return 应用信息实体
      */
     AppInfo getByAPKName(@Param("devId") Integer userId, @Param("APKName") String APKName);
+
+    /**
+     * 添加应用信息实体
+     *
+     * @param appInfo 应用信息
+     * @return 影响数据行数
+     */
+    int addAppInfo(AppInfo appInfo);
 
 }
