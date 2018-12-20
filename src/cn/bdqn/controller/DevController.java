@@ -10,6 +10,7 @@ import cn.bdqn.utils.PageBean;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -119,6 +120,7 @@ public class DevController {
                             @RequestParam(value = "categoryLevel3", required = false) Integer categoryLevel3,
                             @RequestParam(value = "pageIndex", required = false, defaultValue = "1") Integer pageIndex,
                             @RequestParam(value = "pageSize", required = false, defaultValue = "5") Integer pageSize) {
+        System.out.println(categoryLevel1+"categoryLevel1");
         DevUser devUser = (DevUser) session.getAttribute(Constants.DEV_USER_SESSION);
         PageBean<AppInfo> beans = appInfoService.findAppInfoByPage(devUser.getId(), softwareName, status, platformId, categoryLevel1, categoryLevel2, categoryLevel3, pageIndex, pageSize);
         model.addAttribute("pages", beans);
@@ -218,6 +220,74 @@ public class DevController {
         }
         model.addAttribute(Constants.SYS_MESSAGE, "增加失败！");
         return "dev/appinfoadd";
+    }
+
+    @RequestMapping("/user/appinfomodify/{id}")
+    public String toModify(@PathVariable Integer id,Model model){
+        System.out.println("/user/appinfomodify/{id}"+id);
+        AppInfo appInfo = appInfoService.findById(id);
+        model.addAttribute("appInfo",appInfo);
+        return "dev/appinfomodify";
+    }
+
+    /**
+     * 实现修改 appinfo 应用实体操作
+     *
+     * @param appInfo       应用实体
+     * @param session       session对象
+     * @param model         model对象
+     * @param request       request对象
+     * @param multipartFile 上传文件对象
+     * @return 逻辑视图名
+     */
+    @RequestMapping("/user/modifyappinfo.html")
+    public String updateAppInfo(AppInfo appInfo, HttpSession session, Model model, HttpServletRequest request,
+                               @RequestParam(value = "a_logoPicPath") MultipartFile multipartFile) {
+        String logoPicPath = null;
+        String logoLocPath = null;
+        if (!multipartFile.isEmpty()) {
+            String path = session.getServletContext().getRealPath("/statics/uploadfiles/");
+            String oldFileName = multipartFile.getOriginalFilename();
+            String suffix = FilenameUtils.getExtension(oldFileName);
+            if ("jpeg".equalsIgnoreCase(suffix)
+                    && "peng".equalsIgnoreCase(suffix)
+                    && "jpg".equalsIgnoreCase(suffix)
+                    && "png".equalsIgnoreCase(suffix)
+                    ) {
+                model.addAttribute(Constants.SYS_MESSAGE, "文件格式错误！");
+                System.out.println("文件格式错误！");
+                return "dev/appinfomodify";
+            }
+            if (multipartFile.getSize() > 500000) {
+                model.addAttribute("msg", "文件太大！");
+                System.out.println("文件太大！");
+                return "dev/appinfomodify";
+            }
+            String uploadFileName = appInfo.getAPKName() + "." + suffix;
+            File file = new File(path, uploadFileName);
+            if (!file.exists()) {
+                file.getParentFile().mkdirs();
+            }
+            try {
+                multipartFile.transferTo(file);
+            } catch (IOException e) {
+                e.printStackTrace();
+                model.addAttribute(Constants.SYS_MESSAGE, "上传失败！");
+                return "dev/appinfomodify";
+            }
+            logoPicPath = request.getContextPath() + "/statics/uploadfiles/" + uploadFileName;
+            logoLocPath = path + uploadFileName;
+        }
+        if (logoPicPath != null)appInfo.setLogoPicPath(logoPicPath);
+        if (logoLocPath != null)appInfo.setLogoLocPath(logoLocPath);
+        appInfo.setModifyBy(appInfo.getId());
+        appInfo.setModifyDate(new Date());
+        int count = appInfoService.addAppInfo(appInfo);
+        if (count > 0) {
+            return "redirect:/dev/user/applist.html";
+        }
+        model.addAttribute(Constants.SYS_MESSAGE, "修改失败！");
+        return "dev/appinfomodify";
     }
 
 }

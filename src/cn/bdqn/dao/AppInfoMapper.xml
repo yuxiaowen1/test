@@ -5,17 +5,18 @@
 <mapper namespace="cn.bdqn.dao.AppInfoMapper">
 
     <select id="getAppInfoByPage" resultType="appInfo">
-        select a.*,
+        select
+        a.*,
         (select valueName from data_dictionary d where a.status=d.valueId AND d.typeCode='APP_STATUS') as statusName,
-        (select valueName from data_dictionary d where a.flatformId=d.valueId AND d.typeCode='APP_FLATFORM') as
-        flatformName,
+        (select valueName from data_dictionary d where a.flatformId=d.valueId AND d.typeCode='APP_FLATFORM') as flatformName,
         (select categoryName from app_category ac where ac.id = a.categoryLevel3) as categoryLevel3Name,
         (select devName from dev_user d where d.id = a.devId) as devName,
         (select categoryName from app_category ac where ac.id = a.categoryLevel1) as categoryLevel1Name,
         (select categoryName from app_category ac where ac.id = a.categoryLevel2) as categoryLevel2Name,
         (select v.versionNo from app_version v where v.id=a.versionId ) as versionNo
+
         from app_info a
-        <trim prefix="where" prefixOverrides="and | or">
+        <trim prefix="where" prefixOverrides="and|or">
             <if test="status != null">
                 and a.status = #{status}
             </if>
@@ -80,5 +81,45 @@
           #{appInfo},#{status},#{onSaleDate},#{offSaleDate},#{categoryLevel1},#{categoryLevel2},#{categoryLevel3},
           #{downloads},#{flatformId},#{logoPicPath},#{logoLocPath},#{createdBy},#{creationDate})
     </insert>
+
+    <select id="getById" resultType="appInfo">
+        select
+        a.*,
+        (select valueName from data_dictionary d where a.status=d.valueId AND d.typeCode='APP_STATUS') as statusName,
+        (select valueName from data_dictionary d where a.flatformId=d.valueId AND d.typeCode='APP_FLATFORM') as flatformName,
+        (select categoryName from app_category ac where ac.id = a.categoryLevel3) as categoryLevel3Name,
+        (select devName from dev_user d where d.id = a.devId) as devName,
+        (select categoryName from app_category ac where ac.id = a.categoryLevel1) as categoryLevel1Name,
+        (select categoryName from app_category ac where ac.id = a.categoryLevel2) as categoryLevel2Name,
+        (select v.versionNo from app_version v where v.id=a.versionId ) as versionNo
+
+        from app_info a where a.id = #{id}
+    </select>
+
+    <update id="updateAppInfo" parameterType="appInfo">
+        update app_info
+        <trim prefix="set" suffixOverrides="," suffix="where id=#{id}">
+            <if test="softwareName != null">softwareName=#{softwareName},</if>
+            <if test="supportROM != null">supportROM=#{supportROM},</if>
+            <if test="interfaceLanguage != null">interfaceLanguage=#{interfaceLanguage},</if>
+            <if test="updateDate != null">updateDate=#{updateDate},</if>
+            <if test="softwareSize != null">softwareSize=#{softwareSize},</if>
+            <if test="appInfo != null">appInfo=#{appInfo},</if>
+            <if test="status != null">status=#{status},</if>
+            <if test="onSaleDate != null">onSaleDate=#{onSaleDate},</if>
+            <if test="offSaleDate != null">offSaleDate=#{offSaleDate},</if>
+            <if test="categoryLevel1 != null">categoryLevel1=#{categoryLevel1},</if>
+            <if test="categoryLevel2 != null">categoryLevel2=#{categoryLevel2},</if>
+            <if test="categoryLevel3 != null">categoryLevel3=#{categoryLevel3},</if>
+            <if test="downloads != null">downloads=#{downloads},</if>
+            <if test="flatformId != null">flatformId=#{flatformId},</if>
+            <if test="logoPicPath != null">logoPicPath=#{logoPicPath},</if>
+            <if test="logoLocPath != null">logoLocPath=#{logoLocPath},</if>
+            <if test="modifyBy != null">modifyBy=#{modifyBy},</if>
+            <if test="modifyDate != null">modifyDate=#{modifyDate},</if>
+        </trim>
+
+        where id = #{id}
+    </update>
 
 </mapper>

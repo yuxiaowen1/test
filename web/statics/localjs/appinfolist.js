@@ -1,6 +1,47 @@
+function  loadCategoryLevel(pid,value,obj){
+    if (value != null){
+        $.ajax({
+            type:"GET",//请求类型
+            url:"/appCategory/list.json",//请求的url
+            data:{pid:pid},//请求参数
+            dataType:"json",//ajax接口（请求url）返回的数据类型
+            success:function(data){//data：返回数据（json对象）
+                obj.html("");
+                var options = "<option value=\"\">--请选择--</option>";
+                obj.append(options);
+                $.each(data,function (index,item) {
+                    if (value != null && value != undefined && item.id==value) {
+                        options = "<option selected=\"selected\" value=\""+item.id+"\" >"+item.categoryName+"</option>";
+                    }else {
+                        options = "<option value=\""+item.id+"\">"+item.categoryName+"</option>";
+                    }
+                    obj.append(options);
+                });
+
+            },
+            error:function(data){//当访问时候，404，500 等非200的错误状态码
+                alert("加载分类列表失败！");
+            }
+        });
+    }
+};
+
+
+
 $(function () {
+
+    var cl1 = $("#queryCategoryLevel1").attr("categoryLevel1");
+    var cl2 = $("#queryCategoryLevel2").attr("categoryLevel2");
+    var cl3 = $("#queryCategoryLevel3").attr("categoryLevel3");
+    //动态加载一级分类列表
+    loadCategoryLevel(0,cl1,$("#queryCategoryLevel1"));
+    //动态加载二级分类列表
+    loadCategoryLevel(cl1,cl2,$("#queryCategoryLevel2"));
+    //动态加载三级分类列表
+    loadCategoryLevel(cl2,cl3,$("#queryCategoryLevel3"));
+
     //异步请求一级分类
-    $.ajax({
+    /*$.ajax({
         type:"GET",//请求类型
         url:"/appCategory/list.json",//请求的url
         data:{pid:0},//请求参数
@@ -9,11 +50,16 @@ $(function () {
             $("#queryCategoryLevel1").html("");
             var options = "<option value=\"\">--请选择--</option>";
             for(var i = 0; i < data.length; i++){
-                options += "<option value=\""+data[i].id+"\">"+data[i].categoryName+"</option>";
+                if ($("#queryCategoryLevel1").attr("categoryLevel1") == data[i].id){
+                    options += "<option selected value=\""+data[i].id+"\">"+data[i].categoryName+"</option>";
+                } else {
+                    options += "<option value=\""+data[i].id+"\">"+data[i].categoryName+"</option>";
+                }
             }
             $("#queryCategoryLevel1").html(options);
         }
-    });
+    });*/
+
     //动态加载app所属状态列表
     $.ajax({
         type:"GET",//请求类型
@@ -72,9 +118,13 @@ $("#queryCategoryLevel1").change(function(){
 			success:function(data){//data：返回数据（json对象）
                 $("#queryCategoryLevel2").removeAttr("disabled");
 				$("#queryCategoryLevel2").html("");
-				var options = "<option value=\"-1\">--请选择--</option>";
+				var options = "<option value=\"\">--请选择--</option>";
 				for(var i = 0; i < data.length; i++){
-					options += "<option value=\""+data[i].id+"\">"+data[i].categoryName+"</option>";
+                    if ($("#queryCategoryLevel2").attr("categoryLevel2") == data[i].id){
+                        options += "<option selected value=\""+data[i].id+"\">"+data[i].categoryName+"</option>";
+                    } else {
+                        options += "<option value=\""+data[i].id+"\">"+data[i].categoryName+"</option>";
+                    }
 				}
 				$("#queryCategoryLevel2").html(options);
 			},
@@ -93,6 +143,7 @@ $("#queryCategoryLevel1").change(function(){
 	$("#queryCategoryLevel3").html(options);
     $("#queryCategoryLevel3").attr("disabled","disabled");
 });
+
 //当二级分类改变时动态加载三级分类
 $("#queryCategoryLevel2").change(function(){
 	var queryCategoryLevel2 = $("#queryCategoryLevel2").val();
@@ -107,9 +158,11 @@ $("#queryCategoryLevel2").change(function(){
 				$("#queryCategoryLevel3").html("");
 				var options = "<option value=\"\">--请选择--</option>";
 				for(var i = 0; i < data.length; i++){
-					//alert(data[i].id);
-					//alert(data[i].categoryName);
-					options += "<option value=\""+data[i].id+"\">"+data[i].categoryName+"</option>";
+                    if ($("#queryCategoryLevel3").attr("categoryLevel3") == data[i].id){
+                        options += "<option selected value=\""+data[i].id+"\">"+data[i].categoryName+"</option>";
+                    } else {
+                        options += "<option value=\""+data[i].id+"\">"+data[i].categoryName+"</option>";
+                    }
 				}
 				$("#queryCategoryLevel3").html(options);
 			},
@@ -124,7 +177,6 @@ $("#queryCategoryLevel2").change(function(){
         $("#queryCategoryLevel3").attr("disabled","disabled");
 	}
 });
-
 
 $(".addVersion").on("click",function(){
 	var obj = $(this);
@@ -149,7 +201,7 @@ $(".modifyAppInfo").on("click",function(){
 	var obj = $(this);
 	var status = obj.attr("status");
 	if(status == "1" || status == "3"){//待审核、审核未通过状态下才可以进行修改操作
-		window.location.href="appinfomodify?id="+ obj.attr("appinfoid");
+		window.location.href="/dev/user/appinfomodify/"+ obj.attr("appinfoid");
 	}else{
 		alert("该APP应用的状态为：【"+obj.attr("statusname")+"】,不能修改！");
 	}

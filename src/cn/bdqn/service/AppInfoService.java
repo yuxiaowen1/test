@@ -51,4 +51,12 @@ public interface AppInfoService {
      * @return 影响数据行数
      */
     int addAppInfo(AppInfo appInfo);
+
+    /**
+     * 根据id查询应用信息实体
+     *
+     * @param id 应用信息实体id
+     * @return 应用信息实体
+     */
+    AppInfo findById(Integer id);
 }

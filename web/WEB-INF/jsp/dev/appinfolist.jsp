@@ -66,7 +66,7 @@
                             <div class="form-group">
                                 <label class="control-label col-md-3 col-sm-3 col-xs-12">一级分类</label>
                                 <div class="col-md-6 col-sm-6 col-xs-12">
-                                    <select id="queryCategoryLevel1" name="categoryLevel1" class="form-control">
+                                    <select id="queryCategoryLevel1" name="categoryLevel1" categoryLevel1="${param.categoryLevel1}" class="form-control">
                                         <%--<c:if test="${categoryLevel1List != null }">
                                             <option value="">--请选择--</option>
                                             <c:forEach var="appCategory" items="${categoryLevel1List}">
@@ -84,15 +84,7 @@
                                 <label class="control-label col-md-3 col-sm-3 col-xs-12">二级分类</label>
                                 <div class="col-md-6 col-sm-6 col-xs-12">
                                     <input type="hidden" name="categorylevel2list" id="categorylevel2list"/>
-                                    <select name="categoryLevel2" id="queryCategoryLevel2" class="form-control" disabled>
-                                        <%--<c:if test="${categoryLevel2List != null }">--%>
-                                            <%--<option value="">--请选择--</option>--%>
-                                            <%--<c:forEach var="appCategory" items="${categoryLevel2List}">--%>
-                                                <%--<option--%>
-                                                        <%--<c:if test="${appCategory.id == queryCategoryLevel2 }">selected="selected"</c:if>--%>
-                                                        <%--value="${appCategory.id}">${appCategory.categoryName}</option>--%>
-                                            <%--</c:forEach>--%>
-                                        <%--</c:if>--%>
+                                    <select name="categoryLevel2" id="queryCategoryLevel2" categoryLevel2="${param.categoryLevel2}" class="form-control" >
                                     </select>
                                 </div>
                             </div>
@@ -101,7 +93,7 @@
                             <div class="form-group">
                                 <label class="control-label col-md-3 col-sm-3 col-xs-12">三级分类</label>
                                 <div class="col-md-6 col-sm-6 col-xs-12">
-                                    <select name="categoryLevel3" id="queryCategoryLevel3" class="form-control" disabled>
+                                    <select name="categoryLevel3" categoryLevel3="${param.categoryLevel3}" id="queryCategoryLevel3" class="form-control" >
                                         <%--<c:if test="${categoryLevel3List != null }">--%>
                                             <%--<option value="">--请选择--</option>--%>
                                             <%--<c:forEach var="appCategory" items="${categoryLevel3List}">--%>

@@ -19,6 +19,11 @@ import java.util.List;
 @Service
 public class AppInfoServiceImpl implements AppInfoService {
 
+    @Override
+    public AppInfo findById(Integer id) {
+        return appInfoMapper.getById(id);
+    }
+
     @Resource
     private AppInfoMapper appInfoMapper;
 

@@ -74,4 +74,21 @@ public interface AppInfoMapper {
      */
     int addAppInfo(AppInfo appInfo);
 
+    /**
+     * 根据id查询应用信息实体
+     *
+     * @param id 应用信息实体id
+     * @return 应用信息实体
+     */
+    AppInfo getById(@Param(value = "id") Integer id);
+
+    /**
+     * 修改应用信息实体
+     *
+     * @param appInfo 应用信息
+     * @return 影响数据行数
+     */
+    int updateAppInfo(AppInfo appInfo);
+
+
 }
